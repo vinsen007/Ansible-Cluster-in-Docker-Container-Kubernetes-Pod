@@ -1,0 +1,33 @@
+FROM registry.access.redhat.com/ubi8/ubi
+
+LABEL maintainer="Yatindra Panchal"
+
+# Install required packages
+RUN dnf install -y \
+    java-17-openjdk \
+    git \
+    curl \
+    unzip \
+    shadow-utils \
+    && dnf clean all
+
+# Add Jenkins user (needed for the agent to run properly)
+RUN useradd -m -d /home/jenkins -s /bin/bash jenkins
+
+# Create required directories
+RUN mkdir -p /home/jenkins/agent && chown -R jenkins:jenkins /home/jenkins
+
+# Switch to Jenkins user
+USER jenkins
+
+COPY agent.jar /home/jenkins/agent.jar
+
+# Set environment variables
+ENV AGENT_WORKDIR=/home/jenkins/agent
+
+# Set working directory
+WORKDIR /home/jenkins
+
+# Entrypoint from Jenkins master
+ENTRYPOINT ["java", "-jar", "/home/jenkins/agent.jar"]
+

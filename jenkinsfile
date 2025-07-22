@@ -1,0 +1,21 @@
+pipeline {
+    agent { label 'jenkins-agent' }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'echo Building on RHEL-based Kubernetes agent...'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'echo Running tests...'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'echo Deploy complete.'
+            }
+        }
+    }
+}
+
